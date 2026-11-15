@@ -1,0 +1,918 @@
+/* The menus: a command console over the live battle. */
+#frontend {
+  position: fixed;
+  inset: 0;
+  display: none;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  pointer-events: auto;
+  font-family: var(--hud-font);
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, rgba(2, 6, 12, 0.92) 0, rgba(2, 6, 12, 0.78) 340px, rgba(2, 6, 12, 0.15) 62%, rgba(2, 6, 12, 0.45) 100%);
+  z-index: 5;
+}
+#frontend.show {
+  display: grid;
+  animation: fe-in 0.6s ease-out;
+}
+@keyframes fe-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+#frontend button {
+  font-family: var(--hud-font);
+}
+.fe-left {
+  display: flex;
+  flex-direction: column;
+  padding: 44px 34px 28px 44px;
+  min-height: 0;
+}
+#frontend .logo h1 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 0.95;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  color: #f2f7ff;
+  text-shadow: 0 0 24px rgba(74, 163, 255, 0.45);
+}
+#frontend .logo h2 {
+  margin: 8px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--holdouts);
+  font-weight: 600;
+}
+.badge {
+  margin: 30px 0 22px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--holdouts);
+  background: linear-gradient(90deg, rgba(74, 163, 255, 0.14), rgba(74, 163, 255, 0));
+}
+.badge .callsign {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 20px;
+}
+.badge .rank {
+  color: var(--warn);
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+.badge input {
+  font: inherit;
+  font-weight: 700;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dashed transparent;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  outline: none;
+}
+.badge input:hover,
+.badge input:focus {
+  border-bottom-color: var(--holdouts-dim);
+}
+.xpbar {
+  height: 5px;
+  margin: 10px 0 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.xpbar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #ffb13a, #ffd86a);
+  box-shadow: 0 0 10px rgba(255, 193, 74, 0.7);
+  transition: width 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.xptext {
+  font-size: 12px;
+  color: var(--muted);
+}
+.xptext b {
+  color: var(--warn);
+}
+.navs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+button.nav {
+  text-align: left;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 8px 0 8px 14px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, padding 0.15s;
+}
+button.nav:hover {
+  color: var(--text);
+  padding-left: 20px;
+}
+button.nav.on {
+  color: #fff;
+  border-left-color: var(--holdouts);
+  text-shadow: 0 0 14px rgba(74, 163, 255, 0.6);
+}
+.fe-left .fine {
+  margin-top: auto;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.fe-right {
+  padding: 44px 48px 36px 24px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--holdouts);
+  font-weight: 600;
+}
+#frontend h2 {
+  margin: 6px 0 10px;
+  font-size: 34px;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+#frontend h3 {
+  margin: 6px 0 6px;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+}
+#frontend h4 {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+#frontend p {
+  color: #c4d1df;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+.planet {
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 10px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.row.center {
+  justify-content: center;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  width: 280px;
+  margin: 0 auto;
+}
+button.quiet {
+  padding: 11px 26px;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: rgba(74, 163, 255, 0.08);
+  border: 1px solid var(--holdouts-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--hud-font);
+  font-weight: 600;
+}
+button.quiet:hover {
+  background: rgba(74, 163, 255, 0.2);
+  border-color: var(--holdouts);
+}
+.cta {
+  transition: filter 0.15s, transform 0.15s;
+}
+.cta:not([disabled]):hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* Command (main) screen: the next operation and the other ways to play, low on the right. */
+.fe-main {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 14px;
+}
+.fe-hero {
+  padding: 22px 26px;
+  max-width: 720px;
+  border-left: 3px solid var(--holdouts);
+}
+/* The special operation's banner: the campaign's colors turned to alarm. */
+.fe-special {
+  padding: 18px 24px 20px;
+  max-width: 720px;
+  border-left: 3px solid var(--danger);
+  background: linear-gradient(90deg, rgba(255, 74, 58, 0.16), rgba(255, 74, 58, 0) 70%), rgba(6, 12, 20, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(255, 74, 58, 0.14);
+}
+.fe-special .kicker {
+  color: var(--danger);
+}
+.fe-special .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fe-special .chips span {
+  padding: 4px 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd2cc;
+  border: 1px solid rgba(255, 74, 58, 0.4);
+  border-radius: 2px;
+  background: rgba(255, 74, 58, 0.08);
+}
+.fe-special .cta {
+  background: var(--danger);
+  color: #1a0402;
+}
+.fe-special .row {
+  margin-top: 14px;
+}
+.fe-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 760px;
+}
+.tile {
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+}
+.tile:hover {
+  border-color: var(--holdouts);
+  background: rgba(16, 32, 52, 0.75);
+  transform: translateY(-2px);
+}
+.tile p {
+  font-size: 13px !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+}
+/* The experimental Unleashed: in the special operation's alarm colors. */
+.tile-alarm {
+  border-left: 3px solid var(--danger);
+  background: linear-gradient(90deg, rgba(255, 74, 58, 0.18), rgba(255, 74, 58, 0) 75%), rgba(6, 12, 20, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(255, 74, 58, 0.2);
+}
+.tile-alarm .kicker {
+  color: var(--danger);
+}
+.tile-alarm:hover {
+  border-color: var(--danger);
+  background: linear-gradient(90deg, rgba(255, 74, 58, 0.28), rgba(255, 74, 58, 0.04) 75%), rgba(16, 20, 28, 0.8);
+}
+/* The Practice Range: Unleashed's, in the range's green. */
+.tile-range {
+  border-left: 3px solid #5dff8a;
+  background: linear-gradient(90deg, rgba(93, 255, 138, 0.14), rgba(93, 255, 138, 0) 75%), rgba(6, 12, 20, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(93, 255, 138, 0.18);
+}
+.tile-range .kicker {
+  color: #5dff8a;
+}
+.tile-range:hover {
+  border-color: #5dff8a;
+  background: linear-gradient(90deg, rgba(93, 255, 138, 0.24), rgba(93, 255, 138, 0.04) 75%), rgba(16, 20, 28, 0.8);
+}
+.fe-stats {
+  display: flex;
+  gap: 26px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.fe-stats b {
+  color: var(--text);
+  font-size: 18px;
+  letter-spacing: 0;
+  margin-right: 4px;
+}
+
+/* Campaign: the missions down the left, the selected mission's briefing beside them. */
+.fe-campaign {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 640px);
+  gap: 16px;
+  align-items: start;
+}
+.mlist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mcard {
+  padding: 12px 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+.mcard:hover {
+  background: rgba(16, 32, 52, 0.75);
+}
+.mcard.on {
+  border-left-color: var(--holdouts);
+  background: rgba(20, 44, 72, 0.8);
+}
+.mcard.locked {
+  opacity: 0.55;
+}
+.mnum {
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--holdouts);
+}
+.mtitle {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.mplanet {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.mstars {
+  margin-top: 4px;
+  font-size: 14px;
+}
+.mstars .wave {
+  margin-left: 6px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.lock {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+i.star {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.18);
+  margin-right: 2px;
+}
+i.star.on {
+  color: var(--warn);
+  text-shadow: 0 0 8px rgba(255, 193, 74, 0.7);
+}
+.mdetail {
+  padding: 22px 26px;
+}
+.brief {
+  margin: 10px 0 4px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 2px solid var(--warn);
+}
+.brief .speaker,
+.speaker {
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--warn);
+  margin-bottom: 6px;
+}
+.brief p {
+  font-style: italic;
+}
+ul.objs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul.objs li {
+  position: relative;
+  padding: 3px 0 3px 22px;
+  font-size: 15px;
+  color: var(--text);
+}
+ul.objs li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--holdouts);
+  transform: rotate(45deg);
+}
+ul.objs li.bonus {
+  color: #cfd9e4;
+}
+ul.objs li b {
+  color: var(--warn);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+ul.objs li.done::before {
+  background: var(--life);
+  border-color: var(--life);
+}
+ul.objs li.done {
+  color: var(--life);
+}
+ul.objs li.failed {
+  color: var(--danger);
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+ul.objs li.failed::before {
+  border-color: var(--danger);
+}
+.diffs {
+  display: flex;
+  gap: 6px;
+}
+button.diff {
+  flex: 1;
+  padding: 9px 0;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  cursor: pointer;
+}
+button.diff:hover {
+  color: var(--text);
+}
+button.diff.on {
+  color: #001022;
+  background: var(--holdouts);
+  border-color: var(--holdouts);
+  font-weight: 700;
+}
+.best {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Armory */
+.fe-armory {
+  max-width: 900px;
+}
+.fe-armory .lead {
+  max-width: 640px;
+}
+.upgs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.upg {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+}
+.upg p {
+  font-size: 13px !important;
+  color: var(--muted) !important;
+  flex: 1;
+}
+.upg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.upg-head h3 {
+  font-size: 18px !important;
+}
+.pips {
+  display: flex;
+  gap: 4px;
+}
+i.pip {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--holdouts);
+  transform: rotate(45deg);
+}
+i.pip.on {
+  background: var(--holdouts);
+  box-shadow: 0 0 8px var(--holdouts);
+}
+.upg-action {
+  margin-top: 6px;
+}
+button.buy {
+  padding: 8px 16px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: #001022;
+  background: var(--warn);
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 700;
+}
+button.buy[disabled] {
+  background: #3a3424;
+  color: #8c826a;
+  cursor: default;
+}
+.maxed {
+  color: var(--life);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.need {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-size: 13px;
+}
+
+/* Settings */
+.fe-settings {
+  max-width: 620px;
+  padding: 22px 28px;
+}
+label.set {
+  display: grid;
+  grid-template-columns: 200px 1fr 48px;
+  align-items: center;
+  gap: 14px;
+  padding: 5px 0;
+  font-size: 15px;
+  color: var(--text);
+}
+label.set input[type='range'] {
+  width: 100%;
+  accent-color: var(--holdouts);
+}
+label.set input[type='checkbox'] {
+  justify-self: start;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--holdouts);
+}
+label.set select {
+  justify-self: start;
+  font: inherit;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--holdouts-dim);
+  border-radius: 3px;
+  padding: 4px 10px;
+}
+label.set output {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+}
+.fe-credits {
+  max-width: 640px;
+  padding: 22px 28px;
+}
+
+/* The loading card as a mission briefing. */
+.card.wide {
+  max-width: 980px;
+  width: calc(100vw - 80px);
+}
+.card .kicker {
+  margin-bottom: 4px;
+}
+.card h1.mission {
+  font-size: 46px;
+  margin-bottom: 18px;
+}
+.brief-cols {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 34px;
+  text-align: left;
+  margin-bottom: 22px;
+}
+.brief-left .quote {
+  font-style: italic;
+  color: #c4d1df !important;
+  margin: 0 0 8px !important;
+}
+.brief-left h4,
+.debrief h4 {
+  margin: 16px 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.brief-cols .keys {
+  margin: 0;
+  align-content: start;
+  font-size: 14px;
+}
+
+/* Objectives in the corner. */
+#obj-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+#obj-list li {
+  position: relative;
+  padding: 2px 0 2px 18px;
+  font-size: 13px;
+  color: var(--text);
+  transition: color 0.4s;
+}
+#obj-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--holdouts);
+  transform: rotate(45deg);
+}
+#obj-list li.bonus {
+  color: #bfcad6;
+}
+#obj-list li.bonus::before {
+  border-color: var(--warn);
+}
+#obj-list li.done {
+  color: var(--life);
+}
+#obj-list li.done::before {
+  background: var(--life);
+  border-color: var(--life);
+}
+#obj-list li.failed {
+  color: var(--danger);
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+/* Transmissions: a talking head and a subtitle. */
+#transmission {
+  position: absolute;
+  left: 22px;
+  bottom: 236px;
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  width: 470px;
+  padding: 10px;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+#transmission.show {
+  opacity: 1;
+  transform: none;
+}
+#transmission .portrait {
+  flex: 0 0 118px;
+  height: 118px;
+  border: 1px solid var(--holdouts-dim);
+  background: radial-gradient(circle at 50% 40%, rgba(74, 163, 255, 0.25), rgba(0, 10, 20, 0.9));
+}
+.tx-speaker {
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--warn);
+  margin: 4px 0 6px;
+}
+.tx-line {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* Debrief */
+.debrief {
+  text-align: center;
+  /* Tall with the roll call, citations and the closing scene: it scrolls on a short screen. */
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.debrief h1 {
+  font-size: 58px !important;
+}
+.dstars {
+  font-size: 44px;
+  margin: -8px 0 10px;
+}
+.dstars i.star {
+  display: inline-block;
+}
+.dstars i.star.on {
+  animation: starpop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+@keyframes starpop {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.dcols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  text-align: left;
+}
+.debrief .stats {
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+}
+.debrief .stats b {
+  font-size: 24px;
+}
+.rw {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  color: var(--muted);
+}
+.rw b {
+  color: var(--text);
+}
+.rw.total {
+  font-size: 18px;
+  color: var(--text);
+}
+.rw.total b {
+  color: var(--warn);
+}
+.rankline {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.rankline em {
+  font-style: normal;
+  color: var(--warn);
+  animation: starpop 0.6s 1.8s both;
+}
+
+/* The debrief's roll call, citations and the story's next lines. */
+.debrief ul.roll,
+.debrief ul.cites {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.debrief ul.roll li,
+.debrief ul.cites li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  color: var(--muted);
+}
+.debrief ul.roll li b,
+.debrief ul.cites li b {
+  color: var(--text);
+  font-weight: 600;
+}
+.debrief ul.roll li.kia b {
+  color: var(--danger);
+}
+.debrief ul.cites li b {
+  color: var(--warn);
+}
+.debrief ul.cites li span {
+  text-align: right;
+}
+.dstory {
+  margin: 18px auto 4px;
+  max-width: 760px;
+  text-align: left;
+  border-left: 3px solid #8fe3ff;
+  padding: 4px 0 4px 16px;
+}
+.dstory p {
+  margin: 6px 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.dstory p b {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8fe3ff;
+  font-weight: 600;
+}
+
+/* Pause */
+#pause .card h2 {
+  margin-bottom: 24px;
+}
+
+/* The briefing card on a short screen (a laptop, a scaled display): tighter, so it fits. */
+@media (max-height: 860px) {
+  .card.wide {
+    padding: 20px 30px;
+  }
+  .card.wide h1 {
+    font-size: 40px;
+  }
+  .card h1.mission {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  .card.wide h2 {
+    margin-bottom: 12px;
+  }
+  .brief-cols {
+    gap: 22px;
+    margin-bottom: 12px;
+  }
+  .brief-cols p,
+  .brief-left .quote {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .brief-cols .keys {
+    font-size: 13px;
+    gap: 3px 14px;
+  }
+  .brief-left h4 {
+    margin: 10px 0 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  #frontend {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .fe-campaign,
+  .dcols,
+  .brief-cols {
+    grid-template-columns: 1fr;
+  }
+  .fe-tiles {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A tile whose mission the content can't play (a campaign map, without the loader). */
+.tile.locked,
+.cta.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

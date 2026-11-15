@@ -1,0 +1,27 @@
+{
+  "name": "boots-on-the-ground-game",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "dev:standalone": "vite --config vite.standalone.config.ts",
+    "build:standalone": "tsc --noEmit && vite build --config vite.standalone.config.ts",
+    "preview:standalone": "vite preview --config vite.standalone.config.ts"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/three": "^0.186.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terry0824/boots-on-the-ground-game.git"
+  }
+}
